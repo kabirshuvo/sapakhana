@@ -19,4 +19,14 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     required: false,
   },
+  isAdmin: {
+    type: Boolean,
+    required: false,
+  },
+  forgotPasswordToken: String,
+  forgotPasswordTokenExpiry: Date,
+  verifyToken: String,
+  veryfyTokenExpiry: Date,
 });
+
+// In this ts file I want to create a complete user model please help.
