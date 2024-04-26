@@ -1,6 +1,20 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model } from "mongoose";
 
-const userSchema = new mongoose.Schema({
+// Define the interface for the user document
+interface IUser extends Document {
+  username: string;
+  email: string;
+  password: string;
+  isVerified?: boolean;
+  isAdmin?: boolean;
+  forgotPasswordToken?: string;
+  forgotPasswordTokenExpiry?: Date;
+  verifyToken?: string;
+  verifyTokenExpiry?: Date;
+}
+
+// Define the mongoose model for the user
+const UserSchema = new mongoose.Schema<IUser>({
   username: {
     type: String,
     required: [true, "Please provide a username"],
@@ -13,20 +27,29 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, "Please provide an email "],
+    required: [true, "Please provide a password"],
   },
   isVerified: {
     type: Boolean,
-    required: false,
+    default: false,
   },
   isAdmin: {
     type: Boolean,
-    required: false,
+    default: false,
   },
   forgotPasswordToken: String,
   forgotPasswordTokenExpiry: Date,
   verifyToken: String,
-  veryfyTokenExpiry: Date,
+  verifyTokenExpiry: Date,
 });
 
-// In this ts file I want to create a complete user model please help.
+// Define the User model type
+interface IUserModel extends Model<IUser> {}
+
+// Create the User model from the schema
+const UserModel: IUserModel = mongoose.model<IUser, IUserModel>(
+  "User",
+  UserSchema
+);
+
+export default UserModel;
