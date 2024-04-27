@@ -1,10 +1,11 @@
 import mongoose, { Document, Model } from "mongoose";
 
-// Define the interface for the user document
 interface IUser extends Document {
   username: string;
   email: string;
   password: string;
+  firstName: string;
+  lastName: string;
   isVerified?: boolean;
   isAdmin?: boolean;
   forgotPasswordToken?: string;
@@ -13,43 +14,60 @@ interface IUser extends Document {
   verifyTokenExpiry?: Date;
 }
 
-// Define the mongoose model for the user
-const UserSchema = new mongoose.Schema<IUser>({
-  username: {
-    type: String,
-    required: [true, "Please provide a username"],
-    unique: true,
+const UserSchema = new mongoose.Schema<IUser>(
+  {
+    username: {
+      type: String,
+      required: [true, "Please provide a username"],
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: [true, "Please provide an email "],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Please provide a password"],
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    forgotPasswordToken: String,
+    forgotPasswordTokenExpiry: Date,
+    verifyToken: String,
+    verifyTokenExpiry: Date,
   },
-  email: {
-    type: String,
-    required: [true, "Please provide an email "],
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: [true, "Please provide a password"],
-  },
-  isVerified: {
-    type: Boolean,
-    default: false,
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  },
-  forgotPasswordToken: String,
-  forgotPasswordTokenExpiry: Date,
-  verifyToken: String,
-  verifyTokenExpiry: Date,
-});
-
-// Define the User model type
-interface IUserModel extends Model<IUser> {}
-
-// Create the User model from the schema
-const UserModel: IUserModel = mongoose.model<IUser, IUserModel>(
-  "User",
-  UserSchema
+  {
+    timestamps: true, // Add createdAt and updatedAt fields
+  }
 );
 
-export default UserModel;
+// Add a unique index to the email field for faster lookups
+UserSchema.index({ email: 1 }, { unique: true });
+
+// Define a virtual property for the user's full name
+UserSchema.virtual("fullName").get(function (this: IUser) {
+  return `${this.firstName} ${this.lastName}`;
+});
+
+// Define a pre-save hook to hash the user's password before saving
+UserSchema.pre<IUser>("save", async function (next) {
+  if (this.isModified("password")) {
+    // Hash password logic here
+  }
+  next();
+});
+
+interface IUserModel extends Model<IUser> {}
+
+const User: IUserModel =
+  mongoose.models.users ||
+  mongoose.model<IUser, IUserModel>("User", UserSchema);
+
+export default User;
