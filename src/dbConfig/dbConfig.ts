@@ -28,6 +28,7 @@ export async function connect({ options }: ConnectParams = {}) {
       console.log("MongoDB reconnected");
     });
 
+    // Log successful connection
     console.log("Connected to the database");
   } catch (error) {
     console.error(
