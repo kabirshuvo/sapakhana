@@ -39,4 +39,5 @@ interface IPostModel extends Model<IPost> {}
 const Post: IPostModel =
   mongoose.models.posts || mongoose.model<IPost>("Post", PostSchema);
 
+// console.log(Post);
 export default Post;

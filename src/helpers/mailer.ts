@@ -37,16 +37,6 @@ export const sendEmail = async ({
       });
     }
 
-    // Create transporter
-    const transporter: Transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT),
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    } as TransportOptions);
-
     // Check if required environment variables are defined
     if (
       !process.env.SMTP_HOST ||
@@ -56,6 +46,26 @@ export const sendEmail = async ({
     ) {
       throw new Error("SMTP configuration is incomplete");
     }
+
+    // Check if SMTP_PORT is defined
+    const smtpPort = process.env.SMTP_PORT;
+
+    if (!smtpPort) {
+      throw new Error("SMTP_PORT environment variable is not defined");
+    }
+
+    // Parse SMTP_PORT to ensure it's a number
+    const port = parseInt(smtpPort);
+
+    // Create transporter
+    const transporter: Transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: port, // Use the parsed port value
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    } as TransportOptions);
 
     // Compose email options
     const mailOptions: MailOptions = {
