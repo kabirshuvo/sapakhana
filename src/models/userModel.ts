@@ -1,5 +1,6 @@
 import mongoose, { Document, Model } from "mongoose";
 
+// Define IUser interface...
 interface IUser extends Document {
   username: string;
   email: string;
@@ -13,6 +14,9 @@ interface IUser extends Document {
   verifyToken?: string;
   verifyTokenExpiry?: Date;
 }
+
+// Define UserDocument type as an alias for Document & IUser
+export type UserDocument = Document & IUser;
 
 const UserSchema = new mongoose.Schema<IUser>(
   {
@@ -64,10 +68,10 @@ UserSchema.pre<IUser>("save", async function (next) {
   next();
 });
 
-interface IUserModel extends Model<IUser> {}
+interface IUserModel extends Model<UserDocument> {}
 
 const User: IUserModel =
   mongoose.models.users ||
-  mongoose.model<IUser, IUserModel>("User", UserSchema);
+  mongoose.model<UserDocument, IUserModel>("User", UserSchema);
 
 export default User;
