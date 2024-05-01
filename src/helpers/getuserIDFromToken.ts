@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 
-export const getDataFromToken = (request: NextRequest) => {
+export const getuserIDFromToken = (request: NextRequest) => {
   try {
     // Get the token from the request cookies and cast it to a string
     const token = String(request.cookies.get("token")?.value || "");

@@ -1,25 +1,25 @@
-import { getDataFromToken } from "@/helpers/getDataFromToken";
+import { getuserIDFromToken } from "@/helpers/getuserIDFromToken";
 import { NextRequest, NextResponse } from "next/server";
 import { connect } from "@/dbConfig/dbConfig";
 import User, { UserDocument } from "@/models/userModel";
-import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
 
 connect();
 
-export async function POST(request: NextRequest) {}
-
-connect();
-
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const userId = await getDataFromToken(request);
+    // Extract user ID from the JWT token in the request cookies
+    const userId = await getuserIDFromToken(request);
+
+    // Find the user by ID and exclude the password field
     const user = await User.findOne({ _id: userId }).select("-password");
+
+    // Return the user data in the response
     return NextResponse.json({
-      mesaaage: "User found",
+      message: "Congratulations, User founded;",
       data: user,
     });
   } catch (error: any) {
+    // If an error occurs, return an error response
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
