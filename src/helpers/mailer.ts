@@ -55,7 +55,7 @@ export const sendEmail = async ({
     }
 
     // Parse SMTP_PORT to ensure it's a number
-    const port = parseInt(smtpPort);
+    const port = parseInt(process.env.SMTP_PORT);
 
     // Create transporter
     const transporter: Transporter = nodemailer.createTransport({
