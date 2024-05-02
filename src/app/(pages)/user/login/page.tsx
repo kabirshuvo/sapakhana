@@ -1,11 +1,11 @@
-import React from "react";
+import LoginForm from "@/components/auth/login-form";
 
-const LogInPage = () => {
+const LoginPage = () => {
   return (
-    <div>
-      <h1> const LogInPage = export default LogInPage</h1>
+    <div className="flex justify-center items-center py-8">
+      <LoginForm />
     </div>
   );
 };
 
-export default LogInPage;
+export default LoginPage;
