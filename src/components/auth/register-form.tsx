@@ -16,8 +16,10 @@ import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { z } from "zod";
+import axios from "axios";
 import { useFormStatus } from "react-dom";
 import { useState } from "react";
+import { toast } from "@/components/ui/use-toast";
 
 const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
@@ -31,9 +33,25 @@ const RegisterForm = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof RegisterSchema>) => {
-    setLoading(true);
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof RegisterSchema>) => {
+    try {
+      // Send form data to your backend server using Axios
+      const response = await axios.post("/api/user/register", data);
+      console.log(response.data); // Handle successful response
+      toast({
+        title: "Registration Successful",
+        description: "You have been successfully registered.",
+        status: "success",
+      });
+    } catch (error) {
+      console.error("Registration failed:", error);
+      toast({
+        title: "Registration Failed",
+        description:
+          "An error occurred while registering. Please try again later.",
+        status: "error",
+      });
+    }
   };
 
   const { pending } = useFormStatus();
@@ -57,7 +75,7 @@ const RegisterForm = () => {
                     <Input
                       {...field}
                       type="email"
-                      placeholder="johndoe@gmail.com"
+                      placeholder="your email here"
                     />
                   </FormControl>
                   <FormMessage />
