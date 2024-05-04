@@ -36,7 +36,11 @@ const RegisterForm = () => {
   const onSubmit = async (data: z.infer<typeof RegisterSchema>) => {
     try {
       // Send form data to your backend server using Axios
-      const response = await axios.post("/api/user/register", data);
+      const response = await axios.post(
+        //
+        "http://localhost:3000/api/users/signup",
+        data
+      );
       console.log(response.data); // Handle successful response
       toast({
         title: "Registration Successful",
