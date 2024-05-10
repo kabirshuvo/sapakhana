@@ -1,5 +1,4 @@
 "use client";
-
 import CardWrapper from "./card-wrapper";
 import {
   Form,
@@ -20,9 +19,11 @@ import axios from "axios";
 import { useFormStatus } from "react-dom";
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
+import User, { UserDocument } from "@/models/userModel";
 
 const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
+  // Removed unused state `user`, as it's not being used in this component
   const form = useForm({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -33,15 +34,21 @@ const RegisterForm = () => {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof RegisterSchema>) => {
+  const onSubmit = async (data: {
+    email: string;
+    name: string;
+    password: string;
+    confirmPassword: string;
+  }) => {
     try {
-      // Send form data to your backend server using Axios
-      const response = await axios.post(
-        //
-        "http://localhost:3000/api/users/signup",
-        data
-      );
-      console.log(response.data); // Handle successful response
+      setLoading(true);
+      const userData = {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      };
+      const response = await axios.post("/api/users/signup", userData);
+      console.log(response.data);
       toast({
         title: "Registration Successful",
         description: "You have been successfully registered.",
@@ -55,6 +62,8 @@ const RegisterForm = () => {
           "An error occurred while registering. Please try again later.",
         status: "error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,7 +97,7 @@ const RegisterForm = () => {
             />
             <FormField
               control={form.control}
-              name="name"
+              name="name" // Assuming the field name is `name`, should match your form schema
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
